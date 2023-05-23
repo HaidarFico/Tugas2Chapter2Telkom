@@ -1,42 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Form from "./components/Form";
+import TodoList from "./components/TodoList";
+import "./App.css";
 
 function App() {
-  const [list, setList] = useState([]);
-  const [input, setInput] = useState("");
+  const [inputText, setInputText] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [status, setStatus] = useState("all");
+  const [filteredTodos, setFilteredTodos] = useState([]);
 
-  const addTodo = (todo) => {
-    const newTodo = {
-      id: Math.random(),
-      todo: todo,
-    };
-
-    setList([...list, newTodo]);
-
-    setInput("");
+  const filterHandler = () => {
+    switch (status) {
+      case "completed":
+        setFilteredTodos(todos.filter((item) => item.completed === true));
+        break;
+      case "uncompleted":
+        setFilteredTodos(todos.filter((item) => item.completed === false));
+        break;
+      default:
+        setFilteredTodos(todos);
+        break;
+    }
   };
 
-  const deleteTodo = (todoId) => {
-    const newRemovedList = list.filter((todo) => todo.id !== todoId);
-
-    setList(newRemovedList);
-  }
+  useEffect(
+    () => {filterHandler()},
+    [todos, status]
+  );
 
   return (
     <div>
-      <h1>Todo List</h1>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+      <header>
+        <h1>Todo List</h1>
+      </header>
+      <Form
+        setInputText={setInputText}
+        todos={todos}
+        setTodos={setTodos}
+        inputText={inputText}
+        setStatus={setStatus}
       />
-      <button onClick={() => addTodo(input)}>Add</button>
-      <ul>
-        {list.map((todo) =>
-        (<li key={todo.id}>
-          {todo.todo}
-          <button onClick={() => deleteTodo(todo.id)}>&times;</button>
-        </li>))}
-      </ul>
+      <TodoList todos={todos} setTodos={setTodos} filteredTodos={filteredTodos} />
     </div>
   );
 }
