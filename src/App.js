@@ -27,7 +27,7 @@ function App() {
     // console.log(`Ini local storage ${localStorage}`);
   };
   const getLocalTodos = () => {
-    if (localStorage.getItem("todos").length == 2) {
+    if (localStorage.getItem("todos") === null || localStorage.getItem("todos").length == 2) {
       console.log("nyampe sini");
       localStorage.setItem("todos", JSON.stringify([]));
     } else {
