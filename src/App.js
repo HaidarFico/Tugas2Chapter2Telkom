@@ -22,11 +22,26 @@ function App() {
         break;
     }
   };
+  const saveLocalTodos = () => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+    // console.log(`Ini local storage ${localStorage}`);
+  };
+  const getLocalTodos = () => {
+    if (localStorage.getItem("todos").length == 2) {
+      console.log("nyampe sini");
+      localStorage.setItem("todos", JSON.stringify([]));
+    } else {
+      let todoLocal = JSON.parse(localStorage.getItem("todos"));
+      setTodos(todoLocal);
+    }
+  };
 
-  useEffect(
-    () => {filterHandler()},
-    [todos, status]
-  );
+  useEffect(() => getLocalTodos(), []);
+
+  useEffect(() => {
+    filterHandler();
+    saveLocalTodos();
+  }, [todos, status]);
 
   return (
     <div>
@@ -40,7 +55,11 @@ function App() {
         inputText={inputText}
         setStatus={setStatus}
       />
-      <TodoList todos={todos} setTodos={setTodos} filteredTodos={filteredTodos} />
+      <TodoList
+        todos={todos}
+        setTodos={setTodos}
+        filteredTodos={filteredTodos}
+      />
     </div>
   );
 }
